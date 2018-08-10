@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace XLFReader
+namespace XlfEditor
 {
     public partial class MainForm : Form
     {
@@ -41,10 +41,6 @@ namespace XLFReader
             InitializeComponent();
         }
 
-        private void btnOpenFile_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
@@ -55,15 +51,82 @@ namespace XLFReader
             SetMode(Mode.List);
         }
 
-        private void SetStatus(bool success = true)
+        private void btnReload_Click(object sender, EventArgs e)
         {
-            if (success)
+            try
             {
-                lblStatus.ForeColor = Color.DarkGreen;
+                ReadData();
             }
-            else
+            catch (Exception exception)
             {
-                lblStatus.ForeColor = Color.OrangeRed;
+                ShowStatus(MessageType.Error, exception.Message);
+            }
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!IsFileSelected())
+                    return;
+
+                if (dgvTranslations.Rows.Count == 0)
+                    return;
+
+                XDocument doc = GetDocument();
+
+                foreach (DataGridViewRow row in dgvTranslations.Rows)
+                {
+                    doc = UpdateTarget(doc, row.Index);
+                }
+
+                SaveXMLDocument(doc);
+
+                ShowStatus(MessageType.Success, "All translations saved successfully.");
+
+            }
+            catch (Exception exception)
+            {
+                ShowStatus(MessageType.Error, exception.Message);
+            }
+        }
+
+        private void dgvTranslations_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == 3)
+            {
+                var senderGrid = (DataGridView)sender;
+
+                if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn && e.RowIndex >= 0)
+                {
+                    XDocument doc = GetDocument();
+                    doc = UpdateTarget(doc, e.RowIndex);
+                    SaveXMLDocument(doc);
+                    ShowStatus(MessageType.Success, "Translation saved successfully.");
+                }
+            }
+        }
+
+        private void btnCloseDetails_Click(object sender, EventArgs e)
+        {
+            SetMode(Mode.List);
+        }
+
+        private void btnDetailsSave_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                dgvTranslations.Rows[Convert.ToInt32(lblDetailsRowId.Text)].Cells["tbcTarget"].Value = txtDetaillsTarget.Text;
+
+                XDocument doc = GetDocument();
+                doc = UpdateTarget(doc, Convert.ToInt32(lblDetailsRowId.Text));
+                SaveXMLDocument(doc);
+                SetMode(Mode.List);
+                ShowStatus(MessageType.Success, "Translation saved successfully.");
+            }
+            catch (Exception exception)
+            {
+                ShowStatus(MessageType.Error, exception.Message);
             }
         }
 
@@ -165,41 +228,13 @@ namespace XLFReader
             }
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (!IsFileSelected())
-                    return;
-
-                if (dgvTranslations.Rows.Count == 0)
-                    return;
-
-                XDocument doc = GetDocument();
-
-                foreach (DataGridViewRow row in dgvTranslations.Rows)
-                {
-                    doc = UpdateTarget(doc, row.Index);
-                }
-
-                SaveXMLDocument(doc);
-
-                ShowStatus(MessageType.Success, "All translations saved successfully.");
-
-            }
-            catch (Exception exception)
-            {
-                ShowStatus(MessageType.Error, exception.Message);
-            }
-        }
-
         private void SaveXMLDocument(XDocument doc)
         {
             string xmlString = UnescapeXML(doc.ToString());
 
             if (TryParseXml(xmlString))
             {
-                System.IO.File.WriteAllText(lblFilePath.Text, xmlString);
+                File.WriteAllText(lblFilePath.Text, xmlString);
             }
             else
             {
@@ -229,28 +264,7 @@ namespace XLFReader
             txtDetaillsTarget.Text = transUnit.Element(df + "target").Value;
         }
 
-        private void btnCloseDetails_Click(object sender, EventArgs e)
-        {
-            SetMode(Mode.List);
-        }
-
-        private void btnDetailsSave_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                dgvTranslations.Rows[Convert.ToInt32(lblDetailsRowId.Text)].Cells["tbcTarget"].Value = txtDetaillsTarget.Text;
-
-                XDocument doc = GetDocument();
-                doc = UpdateTarget(doc, Convert.ToInt32(lblDetailsRowId.Text));
-                SaveXMLDocument(doc);
-                SetMode(Mode.List);
-                ShowStatus(MessageType.Success, "Translation saved successfully.");
-            }
-            catch (Exception exception)
-            {
-                ShowStatus(MessageType.Error, exception.Message);
-            }
-        }
+ 
 
         private XDocument GetDocument()
         {
@@ -259,7 +273,15 @@ namespace XLFReader
 
         private void ShowStatus(MessageType type, string message)
         {
-            SetStatus(type == MessageType.Success ? true : false);
+            if (type == MessageType.Success)
+            {
+                lblStatus.ForeColor = Color.DarkGreen;
+            }
+            else
+            {
+                lblStatus.ForeColor = Color.OrangeRed;
+            }
+
             lblStatus.Text = message;
         }
 
@@ -271,35 +293,7 @@ namespace XLFReader
             return true;
         }
 
-        private void dgvTranslations_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.ColumnIndex == 3)
-            {
-                var senderGrid = (DataGridView)sender;
-
-                if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn && e.RowIndex >= 0)
-                {
-                    XDocument doc = GetDocument();
-                    doc = UpdateTarget(doc, e.RowIndex);
-                    SaveXMLDocument(doc);
-                    ShowStatus(MessageType.Success, "Translation saved successfully.");
-                }
-            }
-        }
-
-        private void btnReload_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                ReadData();
-            }
-            catch (Exception exception)
-            {
-                ShowStatus(MessageType.Error, exception.Message);
-            }
-        }
-
-        private void ReadData()
+         private void ReadData()
         {
             if (!IsFileSelected())
                 return;

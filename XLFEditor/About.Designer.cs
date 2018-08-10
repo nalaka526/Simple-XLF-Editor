@@ -1,4 +1,4 @@
-﻿namespace XLFReader
+﻿namespace XlfEditor
 {
     partial class About
     {
