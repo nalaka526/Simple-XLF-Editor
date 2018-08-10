@@ -32,6 +32,9 @@
             this.labelVersion = new System.Windows.Forms.Label();
             this.txtLicence = new System.Windows.Forms.TextBox();
             this.btnOk = new System.Windows.Forms.Button();
+            this.txtIconAttribution = new System.Windows.Forms.TextBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // labelProductName
@@ -66,7 +69,7 @@
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(824, 592);
+            this.btnOk.Location = new System.Drawing.Point(824, 637);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(206, 57);
             this.btnOk.TabIndex = 3;
@@ -74,15 +77,37 @@
             this.btnOk.UseVisualStyleBackColor = true;
             this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
             // 
+            // txtIconAttribution
+            // 
+            this.txtIconAttribution.Location = new System.Drawing.Point(23, 573);
+            this.txtIconAttribution.Name = "txtIconAttribution";
+            this.txtIconAttribution.ReadOnly = true;
+            this.txtIconAttribution.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtIconAttribution.Size = new System.Drawing.Size(1007, 38);
+            this.txtIconAttribution.TabIndex = 2;
+            this.txtIconAttribution.Text = "    Icon made by Freepik from www.flaticon.com";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(794, -105);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(128, 128);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureBox1.TabIndex = 4;
+            this.pictureBox1.TabStop = false;
+            // 
             // About
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1057, 677);
+            this.ClientSize = new System.Drawing.Size(1057, 714);
             this.Controls.Add(this.btnOk);
+            this.Controls.Add(this.txtIconAttribution);
             this.Controls.Add(this.txtLicence);
             this.Controls.Add(this.labelVersion);
             this.Controls.Add(this.labelProductName);
+            this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.MaximizeBox = false;
@@ -93,6 +118,7 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "About";
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -104,5 +130,7 @@
         private System.Windows.Forms.Label labelVersion;
         private System.Windows.Forms.TextBox txtLicence;
         private System.Windows.Forms.Button btnOk;
+        private System.Windows.Forms.TextBox txtIconAttribution;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
